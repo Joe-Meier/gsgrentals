@@ -298,8 +298,8 @@
   a.credit-stills:hover .credit-overlay,
   a.credit-stills:focus-visible .credit-overlay{opacity:1;transform:none}
   .credit-ph{
-    grid-column:1 / -1;background:var(--block);
-    min-height:180px;display:flex;align-items:center;justify-content:center;
+    grid-column:1 / -1;border:1px solid var(--line);
+    min-height:140px;display:flex;align-items:center;justify-content:center;
     text-align:center;padding:20px;
   }
   @media(max-width:760px){
@@ -414,6 +414,8 @@ const PHOTOS = {
   "c10-05": "photos/c10-05.jpg",
   "c10-06": "photos/c10-06.jpg",
   "c10-hero": "photos/c10-hero.jpg",
+  "hunny-01": "photos/hunny-01.jpg",
+  "hunny-02": "photos/hunny-02.jpg",
   "triumph-01": "photos/triumph-01.jpg",
   "triumph-02": "photos/triumph-02.jpg",
   "triumph-03": "photos/triumph-03.jpg",
@@ -465,7 +467,7 @@ const ITEMS = [
         photographer:"",
         year:"",
         url:"https://www.instagram.com/hunnythetruck/",
-        stills:[]   // add { photo:"key" } for shots you own
+        stills:[ {photo:"hunny-01"}, {photo:"hunny-02"} ]
       }
     ]
   },
