@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Green Street Garage — Picture Vehicles &amp; Locations, NYC</title>
+<meta name="description" content="Picture vehicles and locations for film and television production, based in New York City. Fully insured, production-ready, available for scouts on request.">
+<link rel="canonical" href="https://gsg.rentals/">
+<meta name="theme-color" content="#0d0d0d">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Green Street Garage">
+<meta property="og:title" content="Green Street Garage — Picture Vehicles &amp; Locations">
+<meta property="og:description" content="Picture vehicles and locations for film and television production, based in New York City. Fully insured, production-ready, available for scouts on request.">
+<meta property="og:url" content="https://gsg.rentals/">
+<meta property="og:image" content="https://gsg.rentals/photos/c10-hero.jpg">
+<meta property="og:image:alt" content="1971 Chevrolet C10 longbed pickup">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Green Street Garage — Picture Vehicles &amp; Locations">
+<meta name="twitter:description" content="Picture vehicles and locations for film and television production, based in New York City.">
+<meta name="twitter:image" content="https://gsg.rentals/photos/c10-hero.jpg">
+
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/favicon.svg">
+<!--
+  ADDING / EDITING INVENTORY
+  All listings live in the ITEMS array below. Photos are embedded in the
+  PHOTOS map at the bottom of this file. To add a photo, add an entry to
+  PHOTOS (any key, data URI or a normal URL/path works) and reference it
+  from an item's stills array: { photo: "my-key" }.
+  Entries with { ph: "Label" } render a solid placeholder block.
+-->
+<style>
+  :root{
+    --bg:#ffffff;
+    --ink:#111111;
+    --mid:#7d7d78;
+    --block:#f1f1ef;
+    --line:#e3e3e0;
+    --accent:#ff4d00;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto}
+    *,*::before,*::after{animation-duration:.001s!important;transition-duration:.001s!important}
+    .parallax img,.cover-media,.cover-inner{transform:none!important}
+    .cover-cue{animation:none}
+  }
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size:16px;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  ::selection{background:var(--ink);color:#fff}
+  a{color:inherit;text-decoration:none}
+  a:focus-visible,button:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+  img{display:block;max-width:100%}
+
+  .label{
+    font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+  }
+  .label.dim{color:var(--mid)}
+  .label.accent{color:var(--accent)}
+
+  /* ---------- header ---------- */
+  header{
+    position:fixed;top:0;left:0;right:0;z-index:50;
+    display:flex;justify-content:space-between;align-items:center;
+    padding:18px clamp(20px,4vw,56px);
+    background:var(--bg);
+    border-bottom:1px solid var(--line);
+  }
+  .wordmark{font-weight:700;font-size:18px;letter-spacing:-.02em}
+  nav{display:flex;gap:clamp(16px,3vw,36px)}
+  nav a{color:var(--mid);transition:color .2s}
+  nav a:hover{color:var(--ink)}
+
+  /* ---------- fullscreen video cover ---------- */
+  .cover{
+    position:relative;
+    height:100svh;min-height:520px;
+    display:flex;flex-direction:column;justify-content:flex-end;
+    padding:0 clamp(20px,4vw,56px) clamp(40px,7vh,80px);
+    overflow:hidden;
+    background:#0d0d0d;
+  }
+  .cover-media{position:absolute;inset:-6% 0 -6% 0;overflow:hidden}
+  /* full-bleed crop: fills the viewport edge to edge at any aspect ratio.
+     The source is vertical (606x1080), so wide screens crop top/bottom
+     and scale up. Change object-position to shift which band is shown. */
+  .cover-video{
+    position:absolute;top:0;left:0;
+    width:100%;height:100%;
+    object-fit:cover;
+    object-position:center 42%;
+    will-change:transform;
+  }
+  .cover-scrim{
+    position:absolute;inset:0;
+    background:
+      linear-gradient(to top, rgba(10,10,10,.82) 0%, rgba(10,10,10,.25) 42%, rgba(10,10,10,.30) 100%);
+  }
+  .cover-inner{position:relative;z-index:2;color:#fff}
+  .cover h1{
+    font-weight:700;
+    font-size:clamp(48px,9vw,140px);
+    line-height:.92;letter-spacing:-.05em;margin-left:-.03em;
+    color:#fff;
+  }
+  .cover-sub{
+    margin-top:22px;
+    display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;
+  }
+  .cover-sub p{max-width:52ch;font-size:clamp(15px,1.5vw,19px);color:rgba(255,255,255,.86)}
+  .hero-meta{display:flex;gap:24px;flex-wrap:wrap}
+  .cover .hero-meta .label{color:rgba(255,255,255,.72)}
+  .cover-cue{
+    position:absolute;left:50%;bottom:16px;transform:translateX(-50%);
+    z-index:2;color:rgba(255,255,255,.7);
+    animation:cue 2.4s ease-in-out infinite;
+  }
+  .cover-cue:hover{color:#fff}
+  @keyframes cue{0%,100%{transform:translate(-50%,0)}50%{transform:translate(-50%,5px)}}
+  @media(max-width:640px){
+    .cover-sub{display:block}
+    .cover-sub .hero-meta{margin-top:16px}
+  }
+
+  .hero-img{overflow:hidden}
+  .hero-img img{width:100%;aspect-ratio:21/9;object-fit:cover;scale:1.18}
+
+  /* ---------- parallax ---------- */
+  .parallax{overflow:hidden}
+  .parallax img,.parallax > .px-inner{
+    will-change:transform;
+    transform:translate3d(0,0,0);
+  }
+  .parallax img{transform-origin:center center}
+
+  /* ---------- sections ---------- */
+  section{padding:clamp(64px,10vh,120px) clamp(20px,4vw,56px)}
+  .section-head{
+    display:flex;align-items:baseline;justify-content:space-between;gap:24px;flex-wrap:wrap;
+    border-bottom:1px solid var(--ink);
+    padding-bottom:14px;margin-bottom:clamp(24px,4vh,44px);
+  }
+  h2{font-weight:700;font-size:clamp(32px,5vw,60px);letter-spacing:-.04em;line-height:1}
+
+  /* ---------- cards ---------- */
+  .grid{display:grid;grid-template-columns:repeat(2,1fr);gap:clamp(20px,3vw,44px) clamp(14px,2vw,28px)}
+  .card{display:block}
+  .card .img{
+    aspect-ratio:4/3;background:var(--block);overflow:hidden;position:relative;
+  }
+  .card .img img{width:100%;height:100%;object-fit:cover;transition:opacity .25s;scale:1.14}
+  .card:hover .img img{opacity:.92}
+  .ph-block{
+    position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+    color:var(--mid);
+  }
+  .caption{
+    display:flex;justify-content:space-between;align-items:baseline;gap:12px;
+    padding-top:12px;
+  }
+  .caption h3{font-weight:700;font-size:clamp(16px,1.8vw,21px);letter-spacing:-.02em}
+  .card:hover .caption h3{text-decoration:underline;text-underline-offset:3px}
+  .caption .sub{color:var(--mid);font-size:13px;margin-top:2px}
+  .loc-grid{grid-template-columns:1fr}
+  .loc-grid .card .img{aspect-ratio:21/9}
+  @media(max-width:760px){.grid{grid-template-columns:1fr}}
+
+  /* ---------- process strip ---------- */
+  .strip{
+    border-top:1px solid var(--line);
+    display:grid;grid-template-columns:repeat(3,1fr);
+    gap:clamp(24px,4vw,64px);
+    padding:clamp(48px,8vh,80px) clamp(20px,4vw,56px);
+  }
+  .strip p{color:var(--mid);margin-top:10px;max-width:36ch;font-size:15px}
+  @media(max-width:760px){.strip{grid-template-columns:1fr}}
+
+  /* ---------- footer ---------- */
+  footer{
+    border-top:1px solid var(--line);
+    padding:clamp(64px,10vh,130px) clamp(20px,4vw,56px) 36px;
+  }
+  footer h2{font-size:clamp(40px,7vw,96px);max-width:16ch}
+  .cta-row{margin-top:32px;display:flex;gap:24px;flex-wrap:wrap;align-items:center}
+  .cta{
+    font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+    color:#fff;background:var(--ink);
+    padding:16px 28px;border:0;cursor:pointer;display:inline-block;
+    transition:background .2s;
+  }
+  .cta:hover{background:var(--accent)}
+  .ghost{color:var(--mid);border-bottom:1px solid var(--line);padding-bottom:2px;transition:color .2s}
+  .ghost:hover{color:var(--ink)}
+  .foot-meta{
+    margin-top:clamp(56px,9vh,110px);
+    display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;
+    border-top:1px solid var(--line);padding-top:16px;
+  }
+
+  /* ---------- detail ---------- */
+  #detail{display:none}
+  body.detail-open #index{display:none}
+  body.detail-open #detail{display:block}
+  .detail-top{padding:clamp(100px,15vh,160px) clamp(20px,4vw,56px) 0}
+  .back{
+    display:inline-block;background:none;border:0;cursor:pointer;
+    font-family:inherit;font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--mid);margin-bottom:26px;transition:color .2s;
+  }
+  .back:hover{color:var(--ink)}
+  .detail-head{
+    display:flex;justify-content:space-between;align-items:flex-end;gap:24px;flex-wrap:wrap;
+    margin-bottom:clamp(24px,4vh,40px);
+  }
+  .detail-head h2{font-size:clamp(36px,6vw,84px);letter-spacing:-.045em}
+  .detail-head .label{display:block;margin-bottom:10px}
+  .detail-hero{overflow:hidden}
+  .detail-hero img{width:100%;aspect-ratio:16/9;object-fit:cover;scale:1.16}
+  .detail-hero .ph-hero{
+    width:100%;aspect-ratio:16/9;background:var(--block);
+    display:flex;align-items:center;justify-content:center;color:var(--mid);
+  }
+  .detail-body{
+    padding:clamp(36px,6vh,64px) clamp(20px,4vw,56px);
+    display:grid;grid-template-columns:minmax(0,5fr) minmax(0,4fr);
+    gap:clamp(32px,5vw,88px);align-items:start;
+  }
+  .detail-body .desc p{color:var(--mid);max-width:58ch}
+  .detail-body .desc p + p{margin-top:16px}
+  .specs{border-top:1px solid var(--ink)}
+  .specs dl{display:grid;grid-template-columns:auto 1fr;column-gap:28px}
+  .specs dt,.specs dd{padding:12px 0;border-bottom:1px solid var(--line)}
+  .specs dt{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--mid);padding-top:15px}
+  .specs dd{font-size:15px}
+  @media(max-width:860px){.detail-body{grid-template-columns:1fr}}
+  .gallery-label{padding:0 clamp(20px,4vw,56px) 18px}
+  .gallery{
+    padding:0 clamp(20px,4vw,56px) clamp(64px,10vh,120px);
+    columns:2;column-gap:clamp(14px,2vw,28px);
+  }
+  .gallery img{width:100%;margin-bottom:clamp(14px,2vw,28px);break-inside:avoid}
+  @media(max-width:700px){.gallery{columns:1}}
+  /* selected work */
+  .work{
+    border-top:1px solid var(--ink);
+    margin:0 clamp(20px,4vw,56px) clamp(64px,10vh,120px);
+  }
+  .work-head{
+    display:flex;justify-content:space-between;align-items:baseline;gap:16px;
+    padding:16px 0 clamp(20px,3vh,32px);
+  }
+  .work-head h3{font-weight:700;font-size:clamp(22px,3vw,34px);letter-spacing:-.03em}
+  .credit{
+    display:grid;grid-template-columns:minmax(0,3fr) minmax(0,5fr);
+    gap:clamp(24px,4vw,56px);
+    padding:clamp(24px,4vh,40px) 0;
+    border-top:1px solid var(--line);
+  }
+  .credit h4{font-weight:700;font-size:clamp(20px,2.4vw,28px);letter-spacing:-.03em}
+  .credit-project{color:var(--mid);margin-top:2px;font-size:15px}
+  .credit-specs{
+    display:grid;grid-template-columns:auto 1fr;column-gap:20px;
+    margin-top:18px;
+  }
+  .credit-specs dt{
+    font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--mid);padding:6px 0;
+  }
+  .credit-specs dd{font-size:14px;padding:6px 0}
+  .credit-link{
+    display:inline-block;margin-top:18px;color:var(--accent);
+    border-bottom:1px solid transparent;transition:border-color .2s;
+  }
+  .credit-link:hover{border-color:var(--accent)}
+  .credit-stills{
+    position:relative;display:grid;grid-template-columns:repeat(3,1fr);
+    gap:clamp(8px,1vw,14px);align-content:start;
+  }
+  .credit-stills.n1{grid-template-columns:1fr}
+  .credit-stills.n2{grid-template-columns:repeat(2,1fr)}
+  .credit-stills img{width:100%;aspect-ratio:3/4;object-fit:cover;transition:opacity .2s}
+  a.credit-stills:hover img{opacity:.85}
+  .credit-overlay{
+    position:absolute;left:10px;bottom:10px;
+    background:var(--ink);color:#fff;padding:8px 12px;
+    opacity:0;transform:translateY(4px);
+    transition:opacity .2s,transform .2s;pointer-events:none;
+  }
+  a.credit-stills:hover .credit-overlay,
+  a.credit-stills:focus-visible .credit-overlay{opacity:1;transform:none}
+  .credit-ph{
+    grid-column:1 / -1;background:var(--block);
+    min-height:180px;display:flex;align-items:center;justify-content:center;
+    text-align:center;padding:20px;
+  }
+  @media(max-width:760px){
+    .credit{grid-template-columns:1fr}
+  }
+
+  .detail-foot{
+    border-top:1px solid var(--line);
+    padding:clamp(44px,7vh,80px) clamp(20px,4vw,56px);
+    display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap;
+  }
+  .detail-foot h3{font-weight:700;font-size:clamp(24px,3.5vw,40px);letter-spacing:-.03em}
+
+  /* reveal */
+  .reveal{opacity:0;transform:translateY(16px);transition:opacity .7s ease,transform .7s ease}
+  .reveal.in{opacity:1;transform:none}
+</style>
+</head>
+<body>
+
+<header>
+  <a class="wordmark" href="#top" data-home>Green Street Garage</a>
+  <nav class="label">
+    <a href="#vehicles" data-home>Vehicles</a>
+    <a href="#locations" data-home>Locations</a>
+    <a href="#inquire" data-home>Inquire</a>
+  </nav>
+</header>
+
+<!-- ======================= INDEX ======================= -->
+<div id="index">
+
+  <div class="cover" id="top">
+    <div class="cover-media">
+      <video id="cover-video" class="cover-video" autoplay muted loop playsinline preload="auto"
+             poster="poster.jpg" aria-label="Green Street Garage reel">
+        <source src="hero.webm" type="video/webm">
+        <source src="hero.mp4" type="video/mp4">
+      </video>
+      <div class="cover-scrim"></div>
+    </div>
+    <div class="cover-inner">
+      <h1>Green Street<br>Garage</h1>
+      <div class="cover-sub">
+        <p>Picture vehicles and locations for film and television production, based in New York City. Fully insured, production-ready, available for scouts on request.</p>
+        <div class="hero-meta">
+          <span class="label">New York City</span>
+          <span class="label">COI Available</span>
+        </div>
+      </div>
+    </div>
+    <a class="cover-cue label" href="#vehicles">Scroll ↓</a>
+  </div>
+  <div class="hero-img parallax" data-speed="0.14"><img id="hero-photo" alt="1971 Chevrolet C10"></div>
+
+  <section id="vehicles">
+    <div class="section-head reveal">
+      <h2>Vehicles</h2>
+      <span class="label accent" id="veh-count"></span>
+    </div>
+    <div class="grid" id="veh-grid"></div>
+  </section>
+
+  <section id="locations">
+    <div class="section-head reveal">
+      <h2>Locations</h2>
+      <span class="label accent" id="loc-count"></span>
+    </div>
+    <div class="grid loc-grid" id="loc-grid"></div>
+  </section>
+
+  <div class="strip">
+    <div class="reveal">
+      <span class="label">01 — Scout</span>
+      <p>Send the scene requirements. We respond with availability, rates, and current photos, and can arrange an in-person scout.</p>
+    </div>
+    <div class="reveal">
+      <span class="label">02 — Book</span>
+      <p>We provide a certificate of insurance and confirm day rates in writing. Vehicles arrive fueled, detailed, and camera-ready.</p>
+    </div>
+    <div class="reveal">
+      <span class="label">03 — Shoot</span>
+      <p>We remain reachable from load-in through wrap, with on-set support available for vehicle work.</p>
+    </div>
+  </div>
+
+  <footer id="inquire">
+    <h2 class="reveal">Booking &amp; availability</h2>
+    <div class="cta-row reveal">
+      <a class="cta" href="mailto:hello@gsg.rentals">Send an inquiry</a>
+      <a class="ghost" href="mailto:hello@gsg.rentals">hello@gsg.rentals</a>
+    </div>
+    <div class="foot-meta label dim">
+      <span>Green Street Garage</span>
+      <span>Brooklyn, NY</span>
+      <span>© 2026</span>
+    </div>
+  </footer>
+
+</div>
+
+<!-- ======================= DETAIL ======================= -->
+<div id="detail"></div>
+
+<script>
+/* Embedded photos. Keys referenced from ITEMS stills. */
+const PHOTOS = {
+  "c10-01": "photos/c10-01.jpg",
+  "c10-02": "photos/c10-02.jpg",
+  "c10-03": "photos/c10-03.jpg",
+  "c10-04": "photos/c10-04.jpg",
+  "c10-05": "photos/c10-05.jpg",
+  "c10-06": "photos/c10-06.jpg",
+  "c10-hero": "photos/c10-hero.jpg",
+  "triumph-01": "photos/triumph-01.jpg",
+  "triumph-02": "photos/triumph-02.jpg",
+  "triumph-03": "photos/triumph-03.jpg",
+  "triumph-04": "photos/triumph-04.jpg",
+  "triumph-05": "photos/triumph-05.jpg",
+  "triumph-06": "photos/triumph-06.jpg",
+  "triumph-hero": "photos/triumph-hero.jpg",
+  "vw-01": "photos/vw-01.jpg",
+  "vw-02": "photos/vw-02.jpg",
+  "vw-03": "photos/vw-03.jpg",
+  "vw-04": "photos/vw-04.jpg",
+  "vw-05": "photos/vw-05.jpg",
+  "vw-06": "photos/vw-06.jpg",
+  "vw-hero": "photos/vw-hero.jpg",
+  "wahine-01": "photos/wahine-01.jpg",
+  "wahine-02": "photos/wahine-02.jpg"
+};
+</script>
+
+<script>
+const ITEMS = [
+  {
+    id:"chevrolet-c10-1971",
+    type:"vehicle", code:"A-01", category:"Truck",
+    title:"1971 Chevrolet C10 Longbed",
+    line:"Orange and white two-tone · Runs and drives",
+    desc:[
+      "A second-generation Chevrolet C10 longbed in orange and white two-tone. The truck runs and drives reliably and is suitable for driving shots, static work, and period dressing from the early 1970s onward.",
+      "Available with or without a driver. Trailer delivery to set is available throughout the five boroughs and surrounding region."
+    ],
+    specs:[
+      ["Year","1971"],
+      ["Make / Model","Chevrolet C10"],
+      ["Body","Longbed pickup, two-tone"],
+      ["Condition","Running and driving"],
+      ["Use","Driving shots, static, process trailer"],
+      ["Delivery","Trailered or driven to set"],
+      ["Insurance","COI provided"]
+    ],
+    stills:[
+      {photo:"c10-hero"},{photo:"c10-01"},{photo:"c10-02"},{photo:"c10-03"},
+      {photo:"c10-04"},{photo:"c10-05"},{photo:"c10-06"}
+    ],
+    work:[
+      {
+        client:"Hunny the Truck",
+        project:"Ongoing editorial and social",
+        type:"Editorial / Social",
+        photographer:"",
+        year:"",
+        url:"https://www.instagram.com/hunnythetruck/",
+        stills:[]   // add { photo:"key" } for shots you own
+      }
+    ]
+  },
+  {
+    id:"vw-cabriolet-1987",
+    type:"vehicle", code:"A-02", category:"Convertible",
+    title:"1987 Volkswagen Cabriolet",
+    line:"White over white · Convertible top",
+    desc:[
+      "A 1987 Volkswagen Cabriolet in white with a working convertible top. Correct for mid-1980s through mid-1990s period work, and equally at home in contemporary scenes.",
+      "The car is compact and easy to position on tight locations. Available with or without a driver; delivery to set is available."
+    ],
+    specs:[
+      ["Year","1987"],
+      ["Make / Model","Volkswagen Cabriolet"],
+      ["Body","Two-door convertible"],
+      ["Exterior","White"],
+      ["Condition","Running and driving"],
+      ["Use","Driving shots, static, dressing"],
+      ["Delivery","Trailered or driven to set"],
+      ["Insurance","COI provided"]
+    ],
+    stills:[
+      {photo:"vw-hero"},{photo:"vw-01"},{photo:"vw-02"},{photo:"vw-03"},
+      {photo:"vw-04"},{photo:"vw-05"},{photo:"vw-06"}
+    ],
+    work:[
+      {
+        client:"Wahine",
+        project:"Novelty '22",
+        type:"Lookbook / Apparel campaign",
+        photographer:"Ricardo Gomes",
+        year:"2022",
+        url:"https://wahinehonolulu.com/pages/1-1",
+        stills:[ {photo:"wahine-01"}, {photo:"wahine-02"} ]
+      }
+    ]
+  },
+  {
+    id:"triumph-bonneville-2005",
+    type:"vehicle", code:"A-03", category:"Motorcycle",
+    title:"2005 Triumph Bonneville",
+    line:"Modern classic · Street ready",
+    desc:[
+      "A 2005 Triumph Bonneville in original trim. The Bonneville's classic silhouette reads as period across several decades while remaining fully street-legal and reliable for repeated takes.",
+      "Suitable for riding shots, static setups, and background dressing. Delivered to set with stands and soft covers."
+    ],
+    specs:[
+      ["Year","2005"],
+      ["Make / Model","Triumph Bonneville"],
+      ["Engine","790cc parallel twin"],
+      ["Condition","Running, street legal"],
+      ["Use","Riding shots, static, dressing"],
+      ["Delivery","Delivered to set"],
+      ["Insurance","COI provided"]
+    ],
+    stills:[
+      {photo:"triumph-hero"},{photo:"triumph-01"},{photo:"triumph-02"},{photo:"triumph-03"},
+      {photo:"triumph-04"},{photo:"triumph-05"},{photo:"triumph-06"}
+    ]
+  },
+  {
+    id:"ford-f150-1990",
+    type:"vehicle", code:"A-04", category:"Truck",
+    title:"1990 Ford F-150 SuperCab",
+    line:"Period-correct trim · Runs and drives",
+    desc:[
+      "A ninth-generation F-150 SuperCab in original, period-correct trim. The truck runs and drives reliably and is suitable for both driving shots and static work.",
+      "Available with or without a driver. Trailer delivery to set is available throughout the five boroughs and surrounding region."
+    ],
+    specs:[
+      ["Year","1990"],
+      ["Make / Model","Ford F-150 SuperCab"],
+      ["Body","Extended-cab pickup, long bed"],
+      ["Condition","Running and driving, original trim"],
+      ["Use","Driving shots, static, process trailer"],
+      ["Delivery","Trailered or driven to set"],
+      ["Insurance","COI provided"]
+    ],
+    stills:[ {ph:"Photos coming soon"} ]
+  },
+  {
+    id:"kawasaki-f7-1974",
+    type:"vehicle", code:"A-05", category:"Motorcycle",
+    title:"1974 Kawasaki F7 175",
+    line:"Two-stroke enduro · Original paint",
+    desc:[
+      "A 1974 Kawasaki F7 175 two-stroke enduro in original paint. Correct for early-to-mid-1970s period work and suitable for both street and off-road scenes.",
+      "The bike is compact and easily positioned for static setups and can be supplied with period-correct accessories on request."
+    ],
+    specs:[
+      ["Year","1974"],
+      ["Make / Model","Kawasaki F7 175"],
+      ["Engine","175cc two-stroke single"],
+      ["Finish","Original paint"],
+      ["Condition","Restored, running"],
+      ["Use","Riding shots, static, dressing"],
+      ["Delivery","Delivered to set"],
+      ["Insurance","COI provided"]
+    ],
+    stills:[ {ph:"Photos coming soon"} ]
+  },
+  {
+    id:"greenpoint-loft",
+    type:"location", code:"B-01", category:"Interior",
+    title:"Industrial Loft, Greenpoint",
+    line:"14' ceilings · Freight elevator · North-facing light",
+    desc:[
+      "A working industrial loft in Greenpoint, Brooklyn, with fourteen-foot ceilings, original timber columns, and consistent north-facing light throughout the day.",
+      "Freight elevator access supports full equipment load-ins. The space accommodates crews of up to forty and offers dedicated staging and holding areas on the same floor."
+    ],
+    specs:[
+      ["Neighborhood","Greenpoint, Brooklyn"],
+      ["Type","Industrial loft interior"],
+      ["Ceilings","14 feet"],
+      ["Light","North-facing, full day"],
+      ["Access","Freight elevator, street-level load-in"],
+      ["Power","Building power; tie-in available"],
+      ["Capacity","Crews up to 40"]
+    ],
+    stills:[ {ph:"Photos coming soon"} ]
+  },
+  {
+    id:"skyline-rooftop",
+    type:"location", code:"B-02", category:"Exterior",
+    title:"Rooftop, Skyline View",
+    line:"Manhattan backdrop · On-site power",
+    desc:[
+      "An open rooftop with an unobstructed Manhattan skyline backdrop, suitable for both day and night exteriors.",
+      "Power is available on site, and roof access supports standard grip and lighting packages. Weather contingency space is available one floor below."
+    ],
+    specs:[
+      ["Neighborhood","Greenpoint, Brooklyn"],
+      ["Type","Rooftop exterior"],
+      ["View","Manhattan skyline, unobstructed"],
+      ["Power","On site"],
+      ["Access","Stair and elevator to roof level"],
+      ["Contingency","Covered space one floor below"],
+      ["Capacity","Crews up to 25"]
+    ],
+    stills:[ {ph:"Photos coming soon"} ]
+  },
+  {
+    id:"working-garage",
+    type:"location", code:"B-03", category:"Interior / Exterior",
+    title:"Working Garage",
+    line:"Vehicle lifts · Roll-up door · Practical dressing",
+    desc:[
+      "A working automotive garage with vehicle lifts, a full complement of tools, and authentic practical dressing throughout.",
+      "The roll-up door allows for interior-to-exterior coverage and direct vehicle access. The space photographs well under both practical and supplemental lighting."
+    ],
+    specs:[
+      ["Neighborhood","Brooklyn"],
+      ["Type","Automotive garage"],
+      ["Features","Two lifts, workbenches, tool storage"],
+      ["Access","Roll-up door, direct vehicle entry"],
+      ["Power","Building power; tie-in available"],
+      ["Use","Interior and exterior coverage"],
+      ["Capacity","Crews up to 30"]
+    ],
+    stills:[ {ph:"Photos coming soon"} ]
+  }
+];
+
+/* ===================== rendering ===================== */
+const $ = s => document.querySelector(s);
+const src = k => PHOTOS[k] || "";
+
+function cardImg(st, alt){
+  if(st.photo) return `<img src="${src(st.photo)}" alt="${alt}" loading="lazy">`;
+  return `<div class="ph-block"><span class="label dim">${st.ph}</span></div>`;
+}
+
+function cardHTML(item){
+  return `
+  <a class="card reveal" href="#/${item.id}" aria-label="${item.title}">
+    <div class="img parallax" data-speed="0.10">${cardImg(item.stills[0], item.title)}</div>
+    <div class="caption">
+      <div>
+        <h3>${item.title}</h3>
+        <p class="sub">${item.line}</p>
+      </div>
+      <span class="label dim">${item.code}</span>
+    </div>
+  </a>`;
+}
+
+function renderIndex(){
+  const veh = ITEMS.filter(i=>i.type==="vehicle");
+  const loc = ITEMS.filter(i=>i.type==="location");
+  $("#veh-grid").innerHTML = veh.map(cardHTML).join("");
+  $("#loc-grid").innerHTML = loc.map(cardHTML).join("");
+  $("#veh-count").textContent = `${String(veh.length).padStart(2,"0")} listings`;
+  $("#loc-count").textContent = `${String(loc.length).padStart(2,"0")} listings`;
+  $("#hero-photo").src = src("c10-hero");
+  observeReveals();
+}
+
+function renderDetail(item){
+  const backLabel = item.type === "vehicle" ? "All vehicles" : "All locations";
+  const backHash  = item.type === "vehicle" ? "#vehicles" : "#locations";
+  const first = item.stills[0];
+  const gallery = item.stills.slice(1).filter(st=>st.photo);
+  const mail = `mailto:hello@gsg.rentals?subject=Inquiry: ${encodeURIComponent(item.title)}`;
+  $("#detail").innerHTML = `
+    <div class="detail-top">
+      <button class="back" data-back="${backHash}">← ${backLabel}</button>
+      <div class="detail-head">
+        <div>
+          <span class="label accent">${item.code} · ${item.category}</span>
+          <h2>${item.title}</h2>
+        </div>
+        <a class="cta" href="${mail}">Check availability</a>
+      </div>
+      <div class="detail-hero parallax" data-speed="0.12">
+        ${first.photo
+          ? `<img src="${src(first.photo)}" alt="${item.title}">`
+          : `<div class="ph-hero"><span class="label dim">${first.ph}</span></div>`}
+      </div>
+    </div>
+    <div class="detail-body">
+      <div class="desc">${item.desc.map(p=>`<p>${p}</p>`).join("")}</div>
+      <div class="specs">
+        <dl>${item.specs.map(([k,v])=>`<dt>${k}</dt><dd>${v}</dd>`).join("")}</dl>
+      </div>
+    </div>
+    ${gallery.length ? `
+      <p class="gallery-label label dim">Photos — ${String(gallery.length).padStart(2,"0")}</p>
+      <div class="gallery">
+        ${gallery.map(st=>`<img src="${src(st.photo)}" alt="${item.title}" loading="lazy">`).join("")}
+      </div>` : ""}
+    ${(item.work && item.work.length) ? `
+      <div class="work">
+        <div class="work-head">
+          <h3>Selected work</h3>
+          <span class="label dim">${String(item.work.length).padStart(2,"0")}</span>
+        </div>
+        ${item.work.map(w=>`
+          <article class="credit">
+            <div class="credit-meta">
+              <h4>${w.client}</h4>
+              ${w.project ? `<p class="credit-project">${w.project}</p>` : ""}
+              <dl class="credit-specs">
+                ${w.type ? `<dt>Type</dt><dd>${w.type}</dd>` : ""}
+                ${w.photographer ? `<dt>Photography</dt><dd>${w.photographer}</dd>` : ""}
+                ${w.year ? `<dt>Year</dt><dd>${w.year}</dd>` : ""}
+              </dl>
+              ${w.url ? `<a class="credit-link label" href="${w.url}" target="_blank" rel="noopener noreferrer">View the shoot ↗</a>` : ""}
+            </div>
+            ${(w.stills && w.stills.length)
+              ? `<a class="credit-stills n${w.stills.length}" href="${w.url}" target="_blank" rel="noopener noreferrer" aria-label="View the full ${w.client} campaign">
+                   ${w.stills.map(st=>`<img src="${src(st.photo)}" alt="${w.client} — ${item.title}" loading="lazy">`).join("")}
+                   <span class="credit-overlay label">View full campaign ↗</span>
+                 </a>`
+              : `<div class="credit-stills"><div class="credit-ph"><span class="label dim">Images courtesy of ${w.client}</span></div></div>`}
+          </article>`).join("")}
+      </div>` : ""}
+    <div class="detail-foot">
+      <h3>Booking &amp; availability</h3>
+      <a class="cta" href="${mail}">Send an inquiry</a>
+    </div>`;
+  $("#detail .back").addEventListener("click", e=>{
+    location.hash = e.currentTarget.dataset.back;
+  });
+}
+
+/* ===================== routing ===================== */
+function route(){
+  const h = location.hash;
+  const m = h.match(/^#\/(.+)$/);
+  const item = m ? ITEMS.find(i=>i.id===m[1]) : null;
+  if(item){
+    renderDetail(item);
+    document.body.classList.add("detail-open");
+    window.scrollTo(0,0);
+  } else {
+    document.body.classList.remove("detail-open");
+    if(h && h !== "#top"){
+      const target = document.querySelector(h);
+      if(target) target.scrollIntoView();
+    }
+  }
+}
+window.addEventListener("hashchange", route);
+document.querySelectorAll("[data-home]").forEach(a=>{
+  a.addEventListener("click", ()=>document.body.classList.remove("detail-open"));
+});
+
+/* ===================== parallax ===================== */
+const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+let pxItems = [], pxTicking = false;
+
+const pxObserver = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    const item = pxItems.find(o=>o.el === e.target);
+    if(item) item.visible = e.isIntersecting;
+  });
+  requestParallax();
+},{rootMargin:"100px"});
+
+function collectParallax(){
+  pxItems = [...document.querySelectorAll(".parallax")]
+    .filter(el => el.offsetParent !== null)
+    .map(el => ({
+      el,
+      inner: el.querySelector("img") || el.querySelector(".px-inner"),
+      speed: parseFloat(el.dataset.speed) || 0.12,
+      visible: false
+    }))
+    .filter(o => o.inner);
+
+  if(pxObserver) pxObserver.disconnect();
+  pxItems.forEach(o=>pxObserver.observe(o.el));
+  updateParallax();
+}
+
+function updateParallax(){
+  pxTicking = false;
+  if(reduceMotion) return;
+  const vh = window.innerHeight;
+
+  // hero video drifts slower than the page and eases out
+  const cover = document.querySelector(".cover");
+  if(cover){
+    const y = window.scrollY;
+    if(y < vh * 1.2){
+      const media = cover.querySelector(".cover-media");
+      const inner = cover.querySelector(".cover-inner");
+      if(media) media.style.transform = `translate3d(0, ${y * 0.35}px, 0)`;
+      if(inner){
+        inner.style.transform = `translate3d(0, ${y * 0.14}px, 0)`;
+        inner.style.opacity = String(Math.max(0, 1 - (y / (vh * 0.65))));
+      }
+    }
+  }
+
+  pxItems.forEach(o=>{
+    if(!o.visible) return;
+    const r = o.el.getBoundingClientRect();
+    // -1 (entering from below) .. 1 (leaving at top)
+    const progress = (r.top + r.height / 2 - vh / 2) / (vh / 2 + r.height / 2);
+    const shift = progress * o.speed * r.height * -1;
+    o.inner.style.transform = `translate3d(0, ${shift.toFixed(2)}px, 0)`;
+  });
+}
+
+function requestParallax(){
+  if(!pxTicking){
+    pxTicking = true;
+    requestAnimationFrame(updateParallax);
+  }
+}
+
+window.addEventListener("scroll", requestParallax, {passive:true});
+window.addEventListener("resize", ()=>{ collectParallax(); requestParallax(); }, {passive:true});
+
+/* ===================== cover video ===================== */
+function initCoverVideo(){
+  const v = document.getElementById("cover-video");
+  if(!v) return;
+  [v].forEach(el=>{
+    el.muted = true;              // required for autoplay
+    el.defaultMuted = true;
+    el.playsInline = true;
+    const go = () => el.play().catch(()=>{});
+    go();
+    // some browsers block until the tab is interacted with
+    document.addEventListener("click", go, {once:true});
+    document.addEventListener("touchstart", go, {once:true, passive:true});
+  });
+  // stop decoding once the cover is off screen
+  const vis = new IntersectionObserver(([e])=>{
+    if(e.isIntersecting){ v.play().catch(()=>{}); } else { v.pause(); }
+  },{threshold:0.01});
+  vis.observe(v);
+}
+
+/* ===================== reveal on scroll ===================== */
+let io;
+function observeReveals(){
+  if(io) io.disconnect();
+  io = new IntersectionObserver(entries=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add("in"); io.unobserve(e.target);} });
+  },{threshold:.1});
+  document.querySelectorAll(".reveal").forEach(el=>io.observe(el));
+}
+
+renderIndex();
+route();
+initCoverVideo();
+collectParallax();
+
+// re-collect parallax targets whenever the view changes
+window.addEventListener("hashchange", ()=>setTimeout(collectParallax, 30));
+</script>
+
+</body>
+</html>
