@@ -278,11 +278,16 @@
     height:100svh;overflow:hidden;
     display:flex;align-items:center;justify-content:center;
   }
+  .spacer{height:60svh}   /* dwell: the pinned image holds fully in frame for this much scroll */
   .panel-media{
     position:absolute;inset:-8% 0 -8% 0;
     will-change:transform,filter;
   }
   .panel-media img{width:100%;height:100%;object-fit:cover}
+  /* images much taller than the viewport switch to contain so most of the
+     frame stays visible instead of a heavy crop */
+  .panel-media.fit{inset:0}
+  .panel-media.fit img{object-fit:contain}
   .panel-index{
     position:absolute;z-index:3;
     left:clamp(20px,4vw,56px);bottom:clamp(20px,4vw,40px);
@@ -295,6 +300,7 @@
     pointer-events:none;
   }
   @media (prefers-reduced-motion:reduce){
+    .spacer{display:none}
     .panel{position:relative;height:auto}
     .panel-media{position:relative;inset:0;transform:none!important;filter:none!important}
     .panel-media img{height:auto;aspect-ratio:3/4}
@@ -357,6 +363,20 @@
     .credit{grid-template-columns:1fr}
   }
 
+  .pn{
+    position:relative;z-index:2;background:var(--bg);
+    border-top:1px solid var(--ink);
+    display:grid;grid-template-columns:1fr 1fr;
+  }
+  .pn-cell{padding:clamp(28px,5vh,48px) clamp(20px,4vw,56px);border-right:1px solid var(--line)}
+  .pn-next{text-align:right;border-right:0}
+  .pn-cell h4{font-weight:700;font-size:clamp(18px,2.4vw,30px);letter-spacing:-.03em;margin-top:8px}
+  .pn-cell:hover h4{text-decoration:underline;text-underline-offset:3px}
+  @media(max-width:640px){
+    .pn{grid-template-columns:1fr}
+    .pn-cell{border-right:0;border-bottom:1px solid var(--line)}
+    .pn-next{text-align:left;border-bottom:0}
+  }
   .detail-foot{
     position:relative;z-index:2;background:var(--bg);
     border-top:1px solid var(--line);
@@ -405,7 +425,7 @@
     </div>
     <a class="cover-cue label" href="#vehicles">Scroll ↓</a>
   </div>
-  <div class="hero-img parallax" data-speed="0.14"><img id="hero-photo" alt="1971 Chevrolet C10"></div>
+  <div class="hero-img parallax" data-speed="0.14"><img id="hero-photo" alt="1971 Chevrolet C10" decoding="async"></div>
 
   <section id="vehicles">
     <div class="section-head reveal">
@@ -689,7 +709,7 @@ const $ = s => document.querySelector(s);
 const src = k => PHOTOS[k] || "";
 
 function cardImg(st, alt){
-  if(st.photo) return `<img src="${src(st.photo)}" alt="${alt}" loading="lazy">`;
+  if(st.photo) return `<img src="${src(st.photo)}" alt="${alt}" loading="lazy" decoding="async">`;
   return `<div class="ph-block"><span class="label dim">${st.ph}</span></div>`;
 }
 
@@ -721,6 +741,11 @@ function renderIndex(){
 function renderDetail(item){
   const backLabel = item.type === "vehicle" ? "All vehicles" : "All locations";
   const backHash  = item.type === "vehicle" ? "#vehicles" : "#locations";
+  const siblings = ITEMS.filter(i=>i.type===item.type);
+  const idx = siblings.indexOf(item);
+  const prev = siblings[(idx - 1 + siblings.length) % siblings.length];
+  const next = siblings[(idx + 1) % siblings.length];
+  const showPN = siblings.length > 1;
   const first = item.stills[0];
   const gallery = item.stills.slice(1).filter(st=>st.photo);
   const mail = `mailto:hello@gsg.rentals?subject=Inquiry: ${encodeURIComponent(item.title)}`;
@@ -728,7 +753,7 @@ function renderDetail(item){
     <section class="detail-cover">
       <div class="dc-media">
         ${first.photo
-          ? `<img src="${src(first.photo)}" alt="${item.title}">`
+          ? `<img src="${src(first.photo)}" alt="${item.title}" fetchpriority="high" decoding="async">`
           : `<div class="ph-hero"><span class="label dim">${first.ph}</span></div>`}
       </div>
       <div class="dc-scrim"></div>
@@ -753,10 +778,11 @@ function renderDetail(item){
       <div class="stack">
         ${gallery.map((st,i)=>`
           <div class="panel">
-            <div class="panel-media"><img src="${src(st.photo)}" alt="${item.title}" loading="lazy"></div>
+            <div class="panel-media"><img src="${src(st.photo)}" alt="${item.title}" loading="lazy" decoding="async"></div>
             <div class="panel-grad"></div>
             <span class="panel-index label">${String(i+1).padStart(2,"0")} / ${String(gallery.length).padStart(2,"0")}</span>
-          </div>`).join("")}
+          </div>
+          <div class="spacer" aria-hidden="true"></div>`).join("")}
       </div>` : ""}
     ${(item.work && item.work.length) ? `
       <div class="work">
@@ -784,6 +810,17 @@ function renderDetail(item){
               : `<div class="credit-stills"><div class="credit-ph"><span class="label dim">Images courtesy of ${w.client}</span></div></div>`}
           </article>`).join("")}
       </div>` : ""}
+    ${showPN ? `
+    <nav class="pn">
+      <a class="pn-cell" href="#/${prev.id}">
+        <span class="label dim">← Previous</span>
+        <h4>${prev.title}</h4>
+      </a>
+      <a class="pn-cell pn-next" href="#/${next.id}">
+        <span class="label dim">Next →</span>
+        <h4>${next.title}</h4>
+      </a>
+    </nav>` : ""}
     <div class="detail-foot">
       <h3>Booking &amp; availability</h3>
       <a class="cta" href="${mail}">Send an inquiry</a>
@@ -830,11 +867,35 @@ const pxObserver = new IntersectionObserver(entries=>{
 let stackPanels = [];
 
 function collectStack(){
-  stackPanels = [...document.querySelectorAll(".stack .panel")].map(el=>({
+  const panels = [...document.querySelectorAll(".stack .panel")];
+  const stack = document.querySelector(".stack");
+  const after = stack ? stack.nextElementSibling : null;
+  stackPanels = panels.map((el,i)=>({
     el,
     media: el.querySelector(".panel-media"),
-    index: el.querySelector(".panel-index")
+    index: el.querySelector(".panel-index"),
+    next: panels[i+1] || after,
+    fit: false
   })).filter(p=>p.media);
+  stackPanels.forEach(p=>{
+    const img = p.media.querySelector("img");
+    if(img && !img.complete) img.addEventListener("load", classifyFit, {once:true});
+  });
+  classifyFit();
+}
+
+// tall images in a wide viewport switch to contain so the frame isn't
+// cropped to a sliver; near-matching aspects keep the full-bleed crop
+function classifyFit(){
+  const vAR = window.innerWidth / window.innerHeight;
+  stackPanels.forEach(p=>{
+    const img = p.media.querySelector("img");
+    if(!img || !img.naturalWidth) return;
+    const iAR = img.naturalWidth / img.naturalHeight;
+    p.fit = iAR < vAR * 0.72;
+    p.media.classList.toggle("fit", p.fit);
+  });
+  requestParallax();
 }
 
 function collectParallax(){
@@ -884,16 +945,18 @@ function updateParallax(){
     }
   }
 
-  // stacked gallery: each panel pins, drifts, then recedes as the next covers it
+  // stacked gallery: each panel slides in, pins fully in frame through its
+  // spacer (the dwell), then dims and recedes as the next panel covers it
   stackPanels.forEach(p=>{
     const r = p.el.getBoundingClientRect();
-    // 0 while entering / pinned at top, 1 once fully covered
-    const covered = Math.min(1, Math.max(0, -r.top / vh));
-    // -1 below the fold .. 0 pinned
-    const entering = Math.min(0, Math.max(-1, r.top / vh));
-
-    const drift = entering * 0.12 * vh;        // slow rise on the way in
-    const recede = 1 - covered * 0.08;          // gentle push-back once covered
+    const entering = Math.min(1, Math.max(0, r.top / vh));   // 1 below fold → 0 pinned
+    let covered = 0;
+    if(p.next){
+      const nt = p.next.getBoundingClientRect().top;
+      covered = Math.min(1, Math.max(0, 1 - nt / vh));
+    }
+    const drift  = entering * (p.fit ? 0.06 : 0.12) * vh;    // lag on the way in
+    const recede = 1 - covered * 0.08;                       // push-back once covered
     p.media.style.transform =
       `translate3d(0, ${drift.toFixed(1)}px, 0) scale(${recede.toFixed(4)})`;
     p.media.style.filter = `brightness(${(1 - covered * 0.45).toFixed(3)})`;
