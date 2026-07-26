@@ -279,15 +279,50 @@
     display:flex;align-items:center;justify-content:center;
   }
   .spacer{height:60svh}   /* dwell: the pinned image holds fully in frame for this much scroll */
+  .panel{background:#0d0d0d}
   .panel-media{
     position:absolute;inset:-8% 0 -8% 0;
     will-change:transform,filter;
   }
   .panel-media img{width:100%;height:100%;object-fit:cover}
-  /* images much taller than the viewport switch to contain so most of the
-     frame stays visible instead of a heavy crop */
-  .panel-media.fit{inset:0}
-  .panel-media.fit img{object-fit:contain}
+
+  /* diptych: two portraits share the screen, each column full height */
+  .panel.duo{display:grid;grid-template-columns:1fr 1fr}
+  .panel.duo .panel-media{
+    position:relative;inset:auto;height:100svh;overflow:hidden;
+  }
+  .panel.duo .panel-media img{scale:1.14}
+
+  /* side: one portrait anchored to an edge, dark field carries the type */
+  .panel.side{display:grid;grid-template-columns:38fr 62fr}
+  .panel.side.flip{grid-template-columns:62fr 38fr}
+  .panel.side .panel-media{
+    position:relative;inset:auto;height:100svh;overflow:hidden;order:2;
+  }
+  .panel.side.flip .panel-media{order:1}
+  .panel.side .panel-media img{scale:1.14}
+  .side-field{
+    order:1;display:flex;flex-direction:column;justify-content:flex-end;
+    padding:clamp(24px,4vw,56px);
+    color:#fff;will-change:opacity;
+  }
+  .panel.side.flip .side-field{order:2}
+  .side-num{
+    font-weight:700;font-size:clamp(90px,16vw,260px);
+    line-height:.85;letter-spacing:-.05em;margin-left:-.04em;
+    color:rgba(255,255,255,.16);
+  }
+  .side-title{margin-top:18px;font-weight:700;font-size:clamp(17px,1.6vw,22px);letter-spacing:-.02em}
+  .side-code{margin-top:6px;color:rgba(255,255,255,.55)}
+
+  @media(max-width:760px){
+    /* phones are portrait: pairs stack half-height, side panels go full-bleed */
+    .panel.duo{grid-template-columns:1fr}
+    .panel.duo .panel-media{height:50svh}
+    .panel.side,.panel.side.flip{display:block}
+    .panel.side .panel-media{position:absolute;inset:-8% 0 -8% 0;height:auto}
+    .side-field{display:none}
+  }
   .panel-index{
     position:absolute;z-index:3;
     left:clamp(20px,4vw,56px);bottom:clamp(20px,4vw,40px);
@@ -505,6 +540,8 @@ const PHOTOS = {
   "wahine-01": "photos/wahine-01.jpg",
   "wahine-02": "photos/wahine-02.jpg"
 };
+/* Natural dimensions per photo key; drives gallery layout grouping. */
+const PHOTO_DIMS = {"c10-01": [1440, 1800], "c10-02": [1800, 2400], "c10-03": [1800, 2400], "c10-04": [1600, 2400], "c10-05": [1800, 1200], "c10-06": [1800, 1200], "c10-hero": [2200, 1459], "hunny-01": [1600, 2400], "hunny-02": [1600, 2400], "triumph-01": [1800, 2400], "triumph-02": [1800, 2400], "triumph-03": [1800, 2400], "triumph-04": [1800, 2400], "triumph-05": [1800, 2400], "triumph-06": [1600, 2400], "triumph-hero": [1720, 2293], "vw-01": [1800, 2232], "vw-02": [1592, 2400], "vw-03": [1440, 1799], "vw-04": [1592, 2400], "vw-05": [1592, 2400], "vw-06": [1800, 2400], "vw-hero": [1800, 2232], "wahine-01": [1800, 2400], "wahine-02": [1800, 2400]};
 </script>
 
 <script>
@@ -774,16 +811,49 @@ function renderDetail(item){
         <dl>${item.specs.map(([k,v])=>`<dt>${k}</dt><dd>${v}</dd>`).join("")}</dl>
       </div>
     </div>
-    ${gallery.length ? `
+    ${gallery.length ? (() => {
+      // group by shape: landscape solo, portrait pairs as diptychs,
+      // leftover portrait anchored to a side with a type field
+      const isPortrait = st => {
+        const d = st.photo && PHOTO_DIMS[st.photo];
+        return d ? d[0] / d[1] < 0.9 : true;
+      };
+      const rows = [];
+      let gi = 0, sides = 0, pairNext = true;
+      while(gi < gallery.length){
+        const st = gallery[gi];
+        if(!isPortrait(st)){ rows.push({t:"full", s:[st]}); gi++; }
+        else if(pairNext && gi + 1 < gallery.length && isPortrait(gallery[gi+1])){
+          rows.push({t:"duo", s:[st, gallery[gi+1]]}); gi += 2; pairNext = false;
+        } else {
+          rows.push({t:"side", s:[st], flip: (sides++ % 2) === 1}); gi++; pairNext = true;
+        }
+      }
+      const N = String(rows.length).padStart(2,"0");
+      const img = (st, ps) => `<div class="panel-media" data-ps="${ps}"><img src="${src(st.photo)}" alt="${item.title}" loading="lazy" decoding="async"></div>`;
+      return `
       <div class="stack">
-        ${gallery.map((st,i)=>`
-          <div class="panel">
-            <div class="panel-media"><img src="${src(st.photo)}" alt="${item.title}" loading="lazy" decoding="async"></div>
+        ${rows.map((row,i)=>{
+          const n = String(i+1).padStart(2,"0");
+          let inner = "";
+          if(row.t === "full") inner = img(row.s[0], 0.12);
+          if(row.t === "duo")  inner = img(row.s[0], 0.10) + img(row.s[1], 0.15);
+          if(row.t === "side") inner = `
+            <div class="side-field">
+              <span class="side-num">${n}</span>
+              <span class="side-title">${item.title}</span>
+              <span class="side-code label">${item.code} · ${item.category}</span>
+            </div>` + img(row.s[0], 0.12);
+          return `
+          <div class="panel ${row.t}${row.flip ? " flip" : ""}">
+            ${inner}
             <div class="panel-grad"></div>
-            <span class="panel-index label">${String(i+1).padStart(2,"0")} / ${String(gallery.length).padStart(2,"0")}</span>
+            <span class="panel-index label">${n} / ${N}</span>
           </div>
-          <div class="spacer" aria-hidden="true"></div>`).join("")}
-      </div>` : ""}
+          <div class="spacer" aria-hidden="true"></div>`;
+        }).join("")}
+      </div>`;
+    })() : ""}
     ${(item.work && item.work.length) ? `
       <div class="work">
         <div class="work-head">
@@ -872,30 +942,13 @@ function collectStack(){
   const after = stack ? stack.nextElementSibling : null;
   stackPanels = panels.map((el,i)=>({
     el,
-    media: el.querySelector(".panel-media"),
+    medias: [...el.querySelectorAll(".panel-media")].map(m=>({
+      el: m, speed: parseFloat(m.dataset.ps) || 0.12
+    })),
+    field: el.querySelector(".side-field"),
     index: el.querySelector(".panel-index"),
-    next: panels[i+1] || after,
-    fit: false
-  })).filter(p=>p.media);
-  stackPanels.forEach(p=>{
-    const img = p.media.querySelector("img");
-    if(img && !img.complete) img.addEventListener("load", classifyFit, {once:true});
-  });
-  classifyFit();
-}
-
-// tall images in a wide viewport switch to contain so the frame isn't
-// cropped to a sliver; near-matching aspects keep the full-bleed crop
-function classifyFit(){
-  const vAR = window.innerWidth / window.innerHeight;
-  stackPanels.forEach(p=>{
-    const img = p.media.querySelector("img");
-    if(!img || !img.naturalWidth) return;
-    const iAR = img.naturalWidth / img.naturalHeight;
-    p.fit = iAR < vAR * 0.72;
-    p.media.classList.toggle("fit", p.fit);
-  });
-  requestParallax();
+    next: panels[i+1] || after
+  })).filter(p=>p.medias.length);
 }
 
 function collectParallax(){
@@ -955,11 +1008,15 @@ function updateParallax(){
       const nt = p.next.getBoundingClientRect().top;
       covered = Math.min(1, Math.max(0, 1 - nt / vh));
     }
-    const drift  = entering * (p.fit ? 0.06 : 0.12) * vh;    // lag on the way in
     const recede = 1 - covered * 0.08;                       // push-back once covered
-    p.media.style.transform =
-      `translate3d(0, ${drift.toFixed(1)}px, 0) scale(${recede.toFixed(4)})`;
-    p.media.style.filter = `brightness(${(1 - covered * 0.45).toFixed(3)})`;
+    const dim = (1 - covered * 0.45).toFixed(3);
+    p.medias.forEach(m=>{
+      const drift = entering * m.speed * vh;                 // lag on the way in
+      m.el.style.transform =
+        `translate3d(0, ${drift.toFixed(1)}px, 0) scale(${recede.toFixed(4)})`;
+      m.el.style.filter = `brightness(${dim})`;
+    });
+    if(p.field) p.field.style.opacity = String(Math.max(0, 1 - covered * 1.4));
     if(p.index) p.index.style.opacity = String(Math.max(0, 1 - covered * 2.2));
   });
 
