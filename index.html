@@ -610,7 +610,23 @@ const PHOTOS = {
   "wahine-02": "photos/wahine-02.jpg"
 };
 /* Natural dimensions per photo key; drives gallery layout grouping. */
-const PHOTO_DIMS = {"c10-01": [1440, 1800], "c10-02": [1800, 2400], "c10-03": [1800, 2400], "c10-04": [1600, 2400], "c10-05": [1800, 1200], "c10-06": [1800, 1200], "c10-hero": [2200, 1459], "hunny-01": [1600, 2400], "hunny-02": [1600, 2400], "triumph-01": [1800, 2400], "triumph-02": [1800, 2400], "triumph-03": [1800, 2400], "triumph-04": [1800, 2400], "triumph-05": [1800, 2400], "triumph-06": [1600, 2400], "triumph-hero": [1720, 2293], "vw-01": [1800, 2232], "vw-02": [1592, 2400], "vw-03": [1440, 1799], "vw-04": [1592, 2400], "vw-05": [1592, 2400], "vw-06": [1800, 2400], "vw-hero": [1800, 2232], "wahine-01": [1800, 2400], "wahine-02": [1800, 2400]};
+const PHOTO_DIMS = {"c10-01": [1440, 1800], "c10-02": [1800, 2400], "c10-03": [1800, 2400], "c10-04": [1600, 2400], "c10-05": [2000, 1333], "c10-06": [2000, 1333], "c10-hero": [2200, 1459], "hunny-01": [1600, 2400], "hunny-02": [1600, 2400], "triumph-01": [1800, 2400], "triumph-02": [1800, 2400], "triumph-03": [1800, 2400], "triumph-04": [1800, 2400], "triumph-05": [1800, 2400], "triumph-06": [1600, 2400], "triumph-hero": [1720, 2293], "vw-01": [1935, 2400], "vw-02": [1592, 2400], "vw-03": [1440, 1799], "vw-04": [1592, 2400], "vw-05": [1592, 2400], "vw-06": [1800, 2400], "vw-hero": [1935, 2400], "wahine-01": [1800, 2400], "wahine-02": [1800, 2400]};
+
+/* object-position per photo key. Tunes which part of the frame stays
+   visible when an image is cropped in a banner or full-screen cover.
+   Format: "x% y%" — lower y% keeps more of the top (roofs), higher keeps
+   the bottom (wheels). Edit freely; unlisted keys default to center. */
+const FOCUS = {
+  "c10-hero":"50% 62%",
+  "vw-hero":"50% 40%",
+  "triumph-hero":"50% 42%",
+  "c10-05":"50% 45%",
+  "c10-06":"50% 45%",
+  "vw-01":"50% 42%",
+  "triumph-01":"50% 45%",
+  "triumph-03":"50% 45%"
+};
+const focusOf = k => FOCUS[k] || "50% 50%";
 </script>
 
 <script>
@@ -834,7 +850,7 @@ function entryHTML(item, i){
   if(hasPhoto){
     return `
     <a class="entry reveal" href="#/${item.id}" aria-label="${item.title}">
-      <div class="entry-media"><img src="${src(item.stills[0].photo)}" alt="${item.title}" loading="lazy" decoding="async"></div>
+      <div class="entry-media"><img src="${src(item.stills[0].photo)}" alt="${item.title}" loading="lazy" decoding="async" style="object-position:${focusOf(item.stills[0].photo)}"></div>
       <div class="entry-row">
         <div class="entry-title">
           <span class="num label">${num}</span><h3>${item.title}</h3><span class="sl"> / </span><span class="sub">${item.line}</span>
@@ -884,7 +900,7 @@ function renderDetail(item){
     <section class="detail-cover">
       <div class="dc-media">
         ${first.photo
-          ? `<img src="${src(first.photo)}" alt="${item.title}" fetchpriority="high" decoding="async">`
+          ? `<img src="${src(first.photo)}" alt="${item.title}" fetchpriority="high" decoding="async" style="object-position:${focusOf(first.photo)}">`
           : `<div class="ph-hero"><span class="label">${first.ph}</span></div>`}
       </div>
       <div class="dc-scrim"></div>
@@ -922,7 +938,7 @@ function renderDetail(item){
         }
       }
       const N = String(rows.length).padStart(2,"0");
-      const img = (st, ps) => `<div class="panel-media" data-ps="${ps}"><img src="${src(st.photo)}" alt="${item.title}" loading="lazy" decoding="async"></div>`;
+      const img = (st, ps) => `<div class="panel-media" data-ps="${ps}"><img src="${src(st.photo)}" alt="${item.title}" loading="lazy" decoding="async" style="object-position:${focusOf(st.photo)}"></div>`;
       return `
       <div class="stack">
         ${rows.map((row,i)=>{
