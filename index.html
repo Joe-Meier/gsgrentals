@@ -158,12 +158,6 @@
     margin-left:10px;
   }
   .entry-title .num{color:var(--accent);margin-right:12px;font-size:12px;vertical-align:top}
-  .chips{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-top:10px}
-  .chip{
-    font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
-    border:1px solid var(--ink);border-radius:999px;
-    padding:6px 12px;white-space:nowrap;
-  }
   .entry-go{
     font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;
     white-space:nowrap;padding-top:6px;
@@ -179,7 +173,6 @@
     align-items:center;
   }
   .entry.text:last-of-type .entry-row{border-bottom:1px solid var(--ink)}
-  .entry.text .chips{margin-top:8px}
   .feed-gap{height:clamp(24px,5vh,56px)}
 
   /* ---------- about + brands ---------- */
@@ -299,8 +292,7 @@
     margin-top:22px;display:flex;justify-content:space-between;align-items:flex-end;
     gap:24px;flex-wrap:wrap;
   }
-  .dc-chips{display:flex;gap:8px;flex-wrap:wrap}
-  .dc-chips .chip{border-color:rgba(255,255,255,.7);color:#fff}
+  .dc-line{color:rgba(255,255,255,.82);max-width:46ch}
   .dc-cue{
     position:absolute;left:50%;bottom:16px;transform:translateX(-50%);
     z-index:2;color:rgba(255,255,255,.65);
@@ -324,7 +316,6 @@
   }
   .detail-body .desc p{color:var(--mid);max-width:58ch}
   .detail-body .desc p + p{margin-top:16px}
-  .detail-body .chips{margin:0 0 18px}
   .specs{border-top:1px solid var(--ink)}
   .specs dl{display:grid;grid-template-columns:auto 1fr;column-gap:28px}
   .specs dt,.specs dd{padding:12px 0;border-bottom:1px solid var(--line)}
@@ -632,7 +623,6 @@ const ITEMS = [
     type:"vehicle", code:"A-01", category:"Truck",
     title:"1971 Chevrolet C10 Longbed",
     line:"Orange and white two-tone · Runs and drives",
-    tags:["Driving Shots","Static","Process Trailer","Period"],
     desc:[
       "A second-generation Chevrolet C10 longbed in orange and white two-tone. The truck runs and drives reliably and is suitable for driving shots, static work, and period dressing from the early 1970s onward.",
       "Available with or without a driver. Trailer delivery to set is available throughout the five boroughs and surrounding region."
@@ -666,7 +656,6 @@ const ITEMS = [
     type:"vehicle", code:"A-02", category:"Convertible",
     title:"1987 Volkswagen Cabriolet",
     line:"White over white · Convertible top",
-    tags:["Driving Shots","Static","Campaign","Period"],
     desc:[
       "A 1987 Volkswagen Cabriolet in white with a working convertible top. Correct for mid-1980s through mid-1990s period work, and equally at home in contemporary scenes.",
       "The car is compact and easy to position on tight locations. Available with or without a driver; delivery to set is available."
@@ -701,7 +690,6 @@ const ITEMS = [
     type:"vehicle", code:"A-03", category:"Motorcycle",
     title:"2005 Triumph Bonneville",
     line:"Modern classic · Street ready",
-    tags:["Riding Shots","Static","Dressing"],
     desc:[
       "A 2005 Triumph Bonneville in original trim. The Bonneville's classic silhouette reads as period across several decades while remaining fully street-legal and reliable for repeated takes.",
       "Suitable for riding shots, static setups, and background dressing. Delivered to set with stands and soft covers."
@@ -724,7 +712,6 @@ const ITEMS = [
     type:"vehicle", code:"A-04", category:"Truck",
     title:"1990 Ford F-150 SuperCab",
     line:"Period-correct trim · Runs and drives",
-    tags:["Driving Shots","Static","Process Trailer"],
     desc:[
       "A ninth-generation F-150 SuperCab in original, period-correct trim. The truck runs and drives reliably and is suitable for both driving shots and static work.",
       "Available with or without a driver. Trailer delivery to set is available throughout the five boroughs and surrounding region."
@@ -744,7 +731,6 @@ const ITEMS = [
     type:"vehicle", code:"A-05", category:"Motorcycle",
     title:"1974 Kawasaki F7 175",
     line:"Two-stroke enduro · Original paint",
-    tags:["Riding Shots","Static","Period"],
     desc:[
       "A 1974 Kawasaki F7 175 two-stroke enduro in original paint. Correct for early-to-mid-1970s period work and suitable for both street and off-road scenes.",
       "The bike is compact and easily positioned for static setups and can be supplied with period-correct accessories on request."
@@ -765,7 +751,6 @@ const ITEMS = [
     type:"location", code:"B-01", category:"Interior",
     title:"Industrial Loft, Greenpoint",
     line:"14' ceilings · Freight elevator · North-facing light",
-    tags:["Interior","Daylight","Load-In"],
     desc:[
       "A working industrial loft in Greenpoint, Brooklyn, with fourteen-foot ceilings, original timber columns, and consistent north-facing light throughout the day.",
       "Freight elevator access supports full equipment load-ins. The space accommodates crews of up to forty and offers dedicated staging and holding areas on the same floor."
@@ -786,7 +771,6 @@ const ITEMS = [
     type:"location", code:"B-02", category:"Exterior",
     title:"Rooftop, Skyline View",
     line:"Manhattan backdrop · On-site power",
-    tags:["Exterior","Skyline","Day / Night"],
     desc:[
       "An open rooftop with an unobstructed Manhattan skyline backdrop, suitable for both day and night exteriors.",
       "Power is available on site, and roof access supports standard grip and lighting packages. Weather contingency space is available one floor below."
@@ -807,7 +791,6 @@ const ITEMS = [
     type:"location", code:"B-03", category:"Interior / Exterior",
     title:"Working Garage",
     line:"Vehicle lifts · Roll-up door · Practical dressing",
-    tags:["Interior","Exterior","Practical"],
     desc:[
       "A working automotive garage with vehicle lifts, a full complement of tools, and authentic practical dressing throughout.",
       "The roll-up door allows for interior-to-exterior coverage and direct vehicle access. The space photographs well under both practical and supplemental lighting."
@@ -829,10 +812,6 @@ const ITEMS = [
 const $ = s => document.querySelector(s);
 const src = k => PHOTOS[k] || "";
 
-function chipsHTML(tags, cls){
-  return `<div class="chips${cls ? " " + cls : ""}">${(tags||[]).map(t=>`<span class="chip">${t}</span>`).join("")}</div>`;
-}
-
 function entryHTML(item, i){
   const hasPhoto = item.stills[0] && item.stills[0].photo;
   const num = String(i+1).padStart(2,"0");
@@ -843,7 +822,6 @@ function entryHTML(item, i){
       <div class="entry-row">
         <div class="entry-title">
           <span class="num label">${num}</span><h3>${item.title}</h3><span class="sl"> / </span><span class="sub">${item.line}</span>
-          ${chipsHTML(item.tags)}
         </div>
         <span class="entry-go">View ➔</span>
       </div>
@@ -854,7 +832,6 @@ function entryHTML(item, i){
     <div class="entry-row">
       <div class="entry-title">
         <span class="num label">${num}</span><h3>${item.title}</h3><span class="sl"> / </span><span class="sub">${item.line}</span>
-        ${chipsHTML(item.tags)}
       </div>
       <span class="entry-go">View ➔</span>
     </div>
@@ -898,7 +875,7 @@ function renderDetail(item){
         <span class="label accent">${item.code} · ${item.category}</span>
         <h2>${item.title}</h2>
         <div class="dc-foot">
-          <div class="dc-chips">${(item.tags||[]).map(t=>`<span class="chip">${t}</span>`).join("")}</div>
+          <p class="dc-line">${item.line}</p>
           <a class="cta" href="${mail}">Check availability</a>
         </div>
       </div>
